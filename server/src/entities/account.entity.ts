@@ -3,7 +3,6 @@ import { ObjectType, InputType, Field, ID } from "type-graphql";
 import { SortOrder } from "@entities";
 
 export enum AccountFieldOrderBy { //? nome?
-  id = "id",
   name = "name",
   bank = "bank",
 }

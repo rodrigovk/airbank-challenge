@@ -64,10 +64,13 @@ export class TransactionResolver {
       return orderBy && orderBy.field === field ? orderBy.sortOrder : undefined;
     }
 
-    const _orderBy = {
-      id: checkOrderBy(TransactionFieldOrderBy.id),
-      accountId: checkOrderBy(TransactionFieldOrderBy.accountId),
-      categoryId: checkOrderBy(TransactionFieldOrderBy.categoryId),
+    const _orderBy = { //? require the input of the orderBy data?
+      account: {
+        name: checkOrderBy(TransactionFieldOrderBy.accountName),
+      },
+      category: {
+        name: checkOrderBy(TransactionFieldOrderBy.categoryName),
+      },
       reference: checkOrderBy(TransactionFieldOrderBy.reference),
       amount: checkOrderBy(TransactionFieldOrderBy.amount),
       currency: checkOrderBy(TransactionFieldOrderBy.currency),

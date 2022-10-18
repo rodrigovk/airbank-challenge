@@ -11,11 +11,9 @@ export class AccountResolver {
     @Ctx() ctx: Context,
   ) {
     let _orderBy = undefined;
-    if (orderBy && orderBy.field === AccountFieldOrderBy.name) _orderBy = { name: orderBy.sortOrder };
+    if (orderBy && orderBy.field === AccountFieldOrderBy.bank) _orderBy = { bank: orderBy.sortOrder };
     else
-      if (orderBy && orderBy.field === AccountFieldOrderBy.bank) _orderBy = { bank: orderBy.sortOrder };
-      else
-        _orderBy = { id: orderBy ? orderBy.sortOrder : SortOrder.asc };
+      _orderBy = { name: orderBy ? orderBy.sortOrder : SortOrder.asc };
 
     return ctx.prisma.account.findMany({
       orderBy: _orderBy,

@@ -3,9 +3,7 @@ import { ObjectType, InputType, Field, ID } from "type-graphql";
 import { SortOrder } from "@entities";
 
 export enum CategoryFieldOrderBy { //? nome?
-  id = "id",
   name = "name",
-  color = "color",
 }
 
 @InputType()

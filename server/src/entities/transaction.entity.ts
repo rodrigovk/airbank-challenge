@@ -3,9 +3,8 @@ import { ObjectType, InputType, Field, ID } from "type-graphql";
 import { SortOrder, Account, Category } from "@entities";
 
 export enum TransactionFieldOrderBy { //? nome?
-  id = "id",
-  accountId = "accountId",
-  categoryId = "categoryId",
+  accountName = "accountName",
+  categoryName = "categoryName",
   reference = "reference",
   amount = "amount",
   currency = "currency",
