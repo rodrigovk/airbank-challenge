@@ -27,7 +27,7 @@ const loading = ref(true)
 let cursor = null
 
 onMounted(() => {
-  // load()
+  load()
 })
 
 const load = () => {
