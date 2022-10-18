@@ -14,11 +14,14 @@ import {
   // Field,
 } from "type-graphql";
 //import { parseResolveInfo, ResolveTree, simplifyParsedResolveInfoFragmentWithType } from "graphql-parse-resolve-info";
-import { SortOrder, TransactionOrderByInput, TransactionsFilter, TransactionsInput, Transaction, TransactionFieldOrderBy } from "@entities";
+import { SortOrder, TransactionOrderByInput, TransactionsFilter, TransactionsInput, Transaction, TransactionFieldOrderBy, PaginationInput } from "@entities";
 import { Context } from "@frameworks/apollo-server/context";
 import { Fields } from "@frameworks/graphql";
 import { ResolveTree } from "graphql-parse-resolve-info";
 //import { GraphQLResolveInfo } from "graphql";
+
+const MIN_TRANSACTIONS_TAKE = 1;
+const MAX_TRANSACTIONS_TAKE = 50;
 
 @Resolver(Transaction)
 export class TransactionResolver {
@@ -54,23 +57,29 @@ export class TransactionResolver {
 
   @Query(() => [Transaction])
   async transactions(
-    @Arg("orderBy", { nullable: true }) orderBy: TransactionOrderByInput,
-    @Arg("filter", { nullable: true }) filter: TransactionsFilter,
     @Ctx() ctx: Context,
     @Fields() fields: ResolveTree,
+    @Arg("filter", { nullable: true }) filter: TransactionsFilter,
+    @Arg("orderBy", { nullable: true }) orderBy: TransactionOrderByInput,
+    @Arg("pagination", { nullable: true }) pagination?: PaginationInput,
+    // @Arg("take") take: number,
+    // @Arg("cursor", { nullable: true }) cursor?: string,
     //@Info() info: GraphQLResolveInfo,
   ) {
+    const take = Math.min(Math.max(pagination?.take ?? 0, MIN_TRANSACTIONS_TAKE), MAX_TRANSACTIONS_TAKE);
+    const cursor = pagination?.cursor ?? null;
+
     function checkOrderBy(field: string): SortOrder | undefined { //? put in other file and use on other resolvers
       return orderBy && orderBy.field === field ? orderBy.sortOrder : undefined;
     }
 
     const _orderBy = { //? require the input of the orderBy data?
-      account: {
-        name: checkOrderBy(TransactionFieldOrderBy.accountName),
-      },
-      category: {
-        name: checkOrderBy(TransactionFieldOrderBy.categoryName),
-      },
+      // account: { //? can't have account {} and category {} at the same orderBy
+      //   name: checkOrderBy(TransactionFieldOrderBy.accountName),
+      // },
+      // category: {
+      //   name: checkOrderBy(TransactionFieldOrderBy.categoryName),
+      // },
       reference: checkOrderBy(TransactionFieldOrderBy.reference),
       amount: checkOrderBy(TransactionFieldOrderBy.amount),
       currency: checkOrderBy(TransactionFieldOrderBy.currency),
@@ -96,6 +105,9 @@ export class TransactionResolver {
           }
         } : false,
       },
+      skip: cursor ? 1 : 0,
+      take: take,
+      cursor: cursor ? { id: cursor } : undefined,
       where: {
         AND: [
           {
@@ -119,9 +131,12 @@ export class TransactionResolver {
           }
         ]
       },
-      orderBy: _orderBy,
-      skip: 0, //?
-      take: 5, //?
+      orderBy: [
+        _orderBy,
+        {
+          id: SortOrder.asc, //?
+        }
+      ]
     });
   }
 
