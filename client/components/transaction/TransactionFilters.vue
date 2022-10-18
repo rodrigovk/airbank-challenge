@@ -1,8 +1,8 @@
 <template>
   <div class="">
     <div class="flex flex-row flex-wrap gap-4">
-      <TextInput label="Search" :value="filterText" placeholder="Search by bank, account, category, date, amount, currency..." class="w-96" />
-      <SelectInput label="Bank" initialvalue="" placeholder="No filter applied" class="w-48">
+      <TextInput label="Search" :value="filterText" placeholder="Search by bank, account, category, date, amount, currency..." class="grow-[10] shrink w-96" />
+      <SelectInput label="Bank" initialvalue="" placeholder="No filter applied" class="grow w-48">
         <option value="teste1">
           Teste 1
         </option>
@@ -10,7 +10,7 @@
           Teste 2
         </option>
       </SelectInput>
-      <SelectInput label="Account" initialvalue="" placeholder="No filter applied" class="w-48">
+      <SelectInput label="Account" initialvalue="" placeholder="No filter applied" class="grow w-48">
         <option value="teste1">
           Teste 1
         </option>

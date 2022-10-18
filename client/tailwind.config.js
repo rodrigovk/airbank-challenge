@@ -2,7 +2,9 @@
 module.exports = {
   content: [],
   theme: {
-    extend: {}
+    extend: {
+      backgroundColor: ['even'],
+    }
   },
   plugins: []
 }

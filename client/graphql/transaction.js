@@ -1,7 +1,7 @@
 import { gql } from 'graphql-tag'
 
-export const QUERY_TRANSACTIONS = gql`query Transactions($orderBy: TransactionOrderByInput) {
-  transactions(orderBy: $orderBy) {
+export const QUERY_TRANSACTIONS = gql`query Transactions($orderBy: TransactionOrderByInput, $pagination: PaginationInput) {
+  transactions(orderBy: $orderBy, pagination: $pagination) {
     id
     accountId
     categoryId

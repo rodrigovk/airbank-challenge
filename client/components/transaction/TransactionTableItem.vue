@@ -1,16 +1,16 @@
 <template>
-  <div class="table-row border-b border-solid border-gray-200">
+  <div class="table-row border-b border-solid border-gray-200 even:bg-gray-50">
     <TransactionTableItemCell>
       {{ record.reference }}
     </TransactionTableItemCell>
     <TransactionTableItemCell>
-      <CategoryTag :label="record.category.name" :color-code="record.category.color" />
+      <CategoryTag v-if="record.category?.name" :label="record.category?.name" :color-code="record.category?.color" />
     </TransactionTableItemCell>
     <TransactionTableItemCell>
       {{ formatedDate }}
     </TransactionTableItemCell>
     <TransactionTableItemCell class="text-right">
-      <span>{{ formatedAmount }}</span>
+      <span :class="record.amount > 0 ? 'text-green-600' : 'text-red-600'">{{ formatedAmount }}</span>
       <span class="text-gray-400 text-xs font-medium">{{ record.currency }}</span>
     </TransactionTableItemCell>
   </div>

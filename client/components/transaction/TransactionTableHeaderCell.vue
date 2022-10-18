@@ -1,5 +1,5 @@
 <template>
-  <div class="table-cell p-2 text-gray-400">
+  <div class="table-cell px-2 py-3 text-gray-400 font-medium">
     {{ label }}
   </div>
 </template>
