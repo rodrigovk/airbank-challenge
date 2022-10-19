@@ -91,7 +91,7 @@ const load = (loadFilters) => {
           bankId: _filters?.bankId ?? null,
           accountId: _filters?.accountId ?? null,
           startingDate: _filters?.startingDate ? getFirstDayMonthWithString(_filters?.startingDate) + '.000Z' : null,
-          endingDate: _filters?.endingDate ? getLastDayMonthWithString(_filters?.endingDate) + '.000Z' : null,
+          endingDate: _filters?.endingDate ? getLastDayMonthWithString(_filters?.endingDate, true) + '.000Z' : null,
         }
       }
     })
