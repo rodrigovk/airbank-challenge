@@ -49,5 +49,10 @@ export default {
 
   env: {
     graphServerUrl: process.env.GRAPHQL_SERVER_URL || 'http://localhost:4000'
+  },
+
+  telemetry: false,
+  tailwindcss: {
+    viewer: false
   }
 }

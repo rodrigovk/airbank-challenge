@@ -2,6 +2,7 @@
   "name": "airbank-challenge-server",
   "scripts": {
     "dev": "ts-node-dev --no-notify --respawn --transpile-only -r tsconfig-paths/register src/index.ts",
+    "migrate": "npx prisma generate && npx prisma db push && npx prisma db seed",
     "compile": "tsc",
     "postinstall": "npm run compile",
     "start": "npm run compile && node ./dist/index.js"
@@ -19,6 +20,7 @@
   "devDependencies": {
     "@types/graphql": "^14.5.0",
     "@types/node": "^18.11.0",
+    "@types/validator": "^13.7.8",
     "@types/ws": "^8.5.3",
     "@typescript-eslint/eslint-plugin": "^5.40.0",
     "@typescript-eslint/parser": "^5.40.0",
