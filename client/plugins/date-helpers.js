@@ -22,6 +22,10 @@ export function getLastDayMonthWithString(yearMonth) {
   return getLastDayMonth(year, month - 1)
 }
 
+export function addDay(date, days) {
+  return date + days
+}
+
 export function formatDateTimeForInputs(dateTime) {
   return dateTime.split('.')[0]
 }

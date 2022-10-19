@@ -90,8 +90,8 @@ const load = (loadFilters) => {
           textSearch: _filters?.text ?? null,
           bankId: _filters?.bankId ?? null,
           accountId: _filters?.accountId ?? null,
-          startingDate: _filters?.startingDate ? getFirstDayMonthWithString(_filters?.startingDate) : null,
-          endingDate: _filters?.endingDate ? getLastDayMonthWithString(_filters?.endingDate) + 1 : null,
+          startingDate: _filters?.startingDate ? getFirstDayMonthWithString(_filters?.startingDate) + '.000Z' : null,
+          endingDate: _filters?.endingDate ? getLastDayMonthWithString(_filters?.endingDate) + '.000Z' : null,
         }
       }
     })

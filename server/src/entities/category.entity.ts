@@ -14,6 +14,15 @@ export class CategoryOrderByInput {
   sortOrder: SortOrder;
 }
 
+@InputType()
+export class CategoryCreateInput {
+  @Field()
+  name: string;
+
+  @Field({ nullable: true })
+  color?: string;
+}
+
 @ObjectType()
 export class Category {
   @Field(() => ID)
