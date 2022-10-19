@@ -17,10 +17,13 @@
         <button class="h-10 px-2 py-2 bg-black text-gray-300 rounded" @click="toggleCreateCategory">New
           category</button>
       </div>
-      <div v-if="creatingCategory" class="flex flex-row flex-wrap gap-4 items-end">
-        <TextInput v-model="newCategoryName" label="New category" placeholder="Type the new category's name"
-          class="grow" />
-        <button class="h-10 px-2 py-2 bg-black text-gray-300 rounded" @click="saveNewCategory">Save category</button>
+      <div v-if="creatingCategory" class="flex flex-col flex-wrap gap-4">
+        <div class="flex flex-row flex-wrap gap-4 items-end">
+          <TextInput v-model="newCategoryName" label="New category" placeholder="Type the new category's name"
+            class="grow" />
+          <button class="h-10 px-2 py-2 bg-black text-gray-300 rounded" @click="saveNewCategory">Save category</button>
+        </div>
+        <p v-if="newCategoryMessage" class="text-red-500">{{ newCategoryMessage }}</p>
       </div>
     </div>
     <div class="flex flex-row flex-wrap gap-4">
@@ -138,12 +141,16 @@ const colorCodeStyle = (colorCode) => {
 
 const creatingCategory = ref(false)
 const newCategoryName = ref('')
+const newCategoryMessage = ref('')
 
 const toggleCreateCategory = () => {
   creatingCategory.value = !creatingCategory.value
 }
 
 const saveNewCategory = () => {
+  newCategoryMessage.value = ''
+  if (newCategoryName.value === '') return newCategoryMessage.value = 'Name not informed'
+  
   loading.value = true
   apolloClient.mutate(
     {

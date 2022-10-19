@@ -11,7 +11,6 @@
         @onSort="onSort" />
     </div>
 
-    <!-- @close-modal="toggleRecordModal" -->
     <SidePanel :modalActive="recordModalActive" :closeButtonVisible="false"
       classPanel="w-full sm:w-5/6 md:w-4/6 lg:w-3/6">
       <div class="p-4">
