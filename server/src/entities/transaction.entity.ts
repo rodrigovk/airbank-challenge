@@ -38,24 +38,24 @@ export class TransactionsFilter {
 }
 
 @InputType()
-export class TransactionsInput {
-  @Field()
-  accountId: string;
+export class TransactionUpdateInput {
+  @Field(() => ID, { nullable: true })
+  accountId?: string;
+
+  @Field(() => ID, { nullable: true })
+  categoryId?: string;
 
   @Field({ nullable: true })
-  categoryId: string;
+  reference?: string;
 
   @Field({ nullable: true })
-  reference: string;
+  amount?: number;
 
-  @Field()
-  amount: number;
+  @Field({ nullable: true })
+  currency?: string;
 
-  @Field()
-  currency: string;
-
-  @Field()
-  date: Date;
+  @Field({ nullable: true })
+  date?: Date;
 }
 
 @ObjectType()

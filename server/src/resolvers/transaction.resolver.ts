@@ -8,7 +8,7 @@ import {
   ID,
 } from "type-graphql";
 import { ResolveTree } from "graphql-parse-resolve-info";
-import { SortOrder, TransactionOrderByInput, TransactionsFilter, TransactionsInput, Transaction, TransactionFieldOrderBy, PaginationInput } from "@entities";
+import { SortOrder, TransactionOrderByInput, TransactionsFilter, TransactionUpdateInput, Transaction, TransactionFieldOrderBy, PaginationInput } from "@entities";
 import { Context } from "@frameworks/apollo-server/context";
 import { Fields } from "@frameworks/graphql";
 
@@ -65,11 +65,11 @@ export class TransactionResolver {
     }
 
     const _orderBy = {
-      account: checkOrderBy(TransactionFieldOrderBy.accountName) ? 
-        { 
+      account: checkOrderBy(TransactionFieldOrderBy.accountName) ?
+        {
           name: sortOrder,
         } : undefined,
-      category: checkOrderBy(TransactionFieldOrderBy.categoryName) ? 
+      category: checkOrderBy(TransactionFieldOrderBy.categoryName) ?
         {
           name: sortOrder,
         } : undefined,
@@ -116,7 +116,7 @@ export class TransactionResolver {
               { account: filter?.textSearch ? { bank: { name: { contains: filter.textSearch, mode: "insensitive" } } } : undefined },
               { category: filter?.textSearch ? { name: { contains: filter.textSearch, mode: "insensitive" } } : undefined },
               //? DATE
-              //? AMOUNT
+              { amount: filter?.textSearch && parseFloat(filter?.textSearch) ? { equals: parseFloat(filter?.textSearch) } : undefined },
               { currency: filter?.textSearch && filter?.textSearch.length === 3 ? { equals: filter.textSearch, mode: "insensitive" } : undefined },
             ] : undefined,
           }
@@ -131,23 +131,40 @@ export class TransactionResolver {
     });
   }
 
-  @Mutation(() => Transaction)
-  async createTransaction(
-    @Arg("data") data: TransactionsInput,
-    @Ctx() ctx: Context,
-  ) {
-    return ctx.prisma.transaction.create({
-      data,
-    });
-  }
+  // @Mutation(() => Transaction)
+  // async createTransaction(
+  //   @Arg("data") data: TransactionCreateInput,
+  //   @Ctx() ctx: Context,
+  // ) {
+  //   return ctx.prisma.transaction.create({
+  //     data,
+  //   });
+  // }
 
   @Mutation(() => Transaction, { nullable: true })
-  async changeTransaction(
-    @Arg("id", () => ID) id: string,
-    @Arg("data") data: TransactionsInput,
+  async updateTransaction(
     @Ctx() ctx: Context,
+    @Fields() fields: ResolveTree,
+    @Arg("id", () => ID) id: string,
+    @Arg("data") data: TransactionUpdateInput,
   ) {
     return ctx.prisma.transaction.update({
+      include: {
+        account: fields.fieldsByTypeName.Transaction["account"] ? {
+          select: {
+            id: true,
+            name: true,
+            bank: true,
+          }
+        } : false,
+        category: fields.fieldsByTypeName.Transaction["category"] ? {
+          select: {
+            id: true,
+            name: true,
+            color: true,
+          }
+        } : false,
+      },
       data,
       where: {
         id,
