@@ -1,13 +1,12 @@
 <template>
   <Transition name="modal-outer">
-    <div v-show="modalActive"
-      class="absolute flex flex-row justify-end w-full bg-black bg-opacity-30 h-screen top-0 left-0 z-45">
+    <div
+      v-show="modalActive"
+      class="absolute flex flex-row justify-end w-full bg-black bg-opacity-30 h-screen top-0 left-0 z-45"
+    >
       <Transition name="modal-inner">
         <div v-if="modalActive" class="bg-white justify-self-end self-stretch max-w-screen-md" :class="classPanel">
           <slot />
-          <Button customColor="teal" class="mt-2" @click="$emit('close-modal')" v-show="closeButtonVisible">
-            Close
-          </Button>
         </div>
       </Transition>
     </div>
@@ -15,21 +14,21 @@
 </template>
 
 <script setup>
-defineEmits(["close-modal"]);
+defineEmits(['close-modal'])
 defineProps({
   modalActive: {
     type: Boolean,
-    default: false,
+    default: false
   },
   closeButtonVisible: {
     type: Boolean,
-    default: true,
+    default: true
   },
   classPanel: {
     type: String,
-    default: '',
+    default: ''
   }
-});
+})
 </script>
 
 <style scoped>
