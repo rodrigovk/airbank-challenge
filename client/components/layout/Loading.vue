@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-row items-center">
+  <div class="flex flex-row items-center justify-center">
     <SpinLoading svg-class="w-6 h-6 text-stone-500" />
     <p class="ml-2 text-md font-medium text-stone-500">
       {{ label }}

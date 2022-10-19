@@ -4,9 +4,10 @@
       {{ label }}
     </label>
     <input
-      :value.trim="value"
+      type="number"
+      :value.number="value"
       @input="$emit('input', $event.target.value)"
-      type="month"
+      :placeholder="placeholder"
       :disabled="disabled"
       @change="onChange"
       class="p-2 h-10 rounded-sm border border-gray-300 outline-none focus:ring-0 focus:border-black transition duration-300 ease-in-out"
@@ -15,14 +16,18 @@
 </template>
 
 <script setup>
-defineProps({
+const props = defineProps({
   label: {
     type: String,
     required: true
   },
   value: {
+    type: Number,
+    default: 0
+  },
+  placeholder: {
     type: String,
-    required: true
+    default: ''
   },
   disabled: {
     type: Boolean,

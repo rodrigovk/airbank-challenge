@@ -1,5 +1,5 @@
 <template>
-  <div class="table-row border-b border-solid border-gray-200 even:bg-gray-50">
+  <NuxtLink :to="`/${record.id}`" class="table-row border-b border-solid border-gray-200 even:bg-gray-50">
     <TransactionTableItemCell>
       {{ record.reference }}
     </TransactionTableItemCell>
@@ -13,7 +13,7 @@
       <span :class="record.amount > 0 ? 'text-green-600' : 'text-red-600'">{{ formatedAmount }}</span>
       <span class="text-gray-400 text-xs font-medium">{{ record.currency }}</span>
     </TransactionTableItemCell>
-  </div>
+  </NuxtLink>
 </template>
 
 <script setup>
