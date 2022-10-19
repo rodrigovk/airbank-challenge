@@ -1,8 +1,8 @@
 import "reflect-metadata";
 import { ObjectType, InputType, Field, ID } from "type-graphql";
-import { SortOrder } from "@entities";
+import { Bank, SortOrder } from "@entities";
 
-export enum AccountFieldOrderBy { //? nome?
+export enum AccountFieldOrderBy {
   name = "name",
   bank = "bank",
 }
@@ -20,12 +20,9 @@ export class Account {
   @Field(() => ID)
   id: string;
 
-  @Field() //?
+  @Field()
   name: string;
 
-  @Field(() => String) //?
-  bank: string;
-
-  // @Field((type) => [Post], { nullable: true })
-  // posts?: [Post] | null
+  @Field(() => Bank)
+  bank?: Bank;
 }

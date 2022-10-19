@@ -7,10 +7,19 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Bank {
+  id       String    @id @default(uuid())
+  name     String
+  accounts Account[]
+
+  @@map("bank")
+}
+
 model Account {
   id           String        @id @default(uuid())
   name         String
-  bank         String
+  bankId       String        @map("bank_id")
+  bank         Bank          @relation(fields: [bankId], references: [id])
   transactions Transaction[]
 
   @@map("account")
@@ -37,4 +46,10 @@ model Transaction {
   date       DateTime  @default(now())
 
   @@map("transaction")
+  @@index([accountId])
+  @@index([categoryId])
+  @@index([reference])
+  @@index([amount])
+  @@index([currency])
+  @@index([date])
 }

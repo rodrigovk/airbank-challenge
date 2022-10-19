@@ -2,7 +2,7 @@ import "reflect-metadata";
 import { ObjectType, InputType, Field, ID } from "type-graphql";
 import { SortOrder } from "@entities";
 
-export enum CategoryFieldOrderBy { //? nome?
+export enum CategoryFieldOrderBy {
   name = "name",
 }
 

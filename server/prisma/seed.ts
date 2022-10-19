@@ -2,22 +2,47 @@ import csv from "csv-parser";
 import fs from "fs";
 import { PrismaClient, Account, Category, Transaction } from "@prisma/client";
 
+type BankCreate = {
+  name: string,
+}
+
+type RawAccount = {
+  id: string,
+  name: string,
+  bank: string,
+}
+
 const prisma = new PrismaClient();
 async function main() {
   await prisma.transaction.deleteMany({});
   await prisma.account.deleteMany({});
   await prisma.category.deleteMany({});
+  await prisma.bank.deleteMany({});
 
-  const accounts: Account[] = [];
+  const banks: BankCreate[] = [];
+  // const accounts: Account[] = [];
+  const rawAccounts: RawAccount[] = [];
   fs.createReadStream("data/accounts.csv")
     .pipe(csv({
       headers: ["id", "name", "bank"],
       skipLines: 1,
     }))
-    .on("data", (account: Account) => {
-      accounts.push(account);
+    .on("data", (rawAccount: RawAccount) => {
+      rawAccounts.push(rawAccount);
+
+      const index = banks.findIndex(b => b.name === rawAccount.bank);
+      if (index < 0) banks.push({ name: rawAccount.bank });
     })
     .on("end", async () => {
+      await prisma.bank.createMany({
+        data: banks,
+      });
+      console.log(`${banks.length} Banks imported successfully`);
+
+      const createdBanks = await prisma.bank.findMany();
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const accounts: Account[] = rawAccounts.map(raw => ({ id: raw.id, name: raw.name, bankId: createdBanks.find(b => b.name === raw.bank)!.id }));
+
       await prisma.account.createMany({
         data: accounts,
       });

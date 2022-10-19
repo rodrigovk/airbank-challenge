@@ -5,20 +5,12 @@ import {
   Mutation,
   Arg,
   Ctx,
-  // Info,
-  // FieldResolver,
-  // Root,
   ID,
-  // Int,
-  // InputType,
-  // Field,
 } from "type-graphql";
-//import { parseResolveInfo, ResolveTree, simplifyParsedResolveInfoFragmentWithType } from "graphql-parse-resolve-info";
+import { ResolveTree } from "graphql-parse-resolve-info";
 import { SortOrder, TransactionOrderByInput, TransactionsFilter, TransactionsInput, Transaction, TransactionFieldOrderBy, PaginationInput } from "@entities";
 import { Context } from "@frameworks/apollo-server/context";
 import { Fields } from "@frameworks/graphql";
-import { ResolveTree } from "graphql-parse-resolve-info";
-//import { GraphQLResolveInfo } from "graphql";
 
 const MIN_TRANSACTIONS_TAKE = 1;
 const MAX_TRANSACTIONS_TAKE = 50;
@@ -62,31 +54,30 @@ export class TransactionResolver {
     @Arg("filter", { nullable: true }) filter: TransactionsFilter,
     @Arg("orderBy", { nullable: true }) orderBy: TransactionOrderByInput,
     @Arg("pagination", { nullable: true }) pagination?: PaginationInput,
-    // @Arg("take") take: number,
-    // @Arg("cursor", { nullable: true }) cursor?: string,
-    //@Info() info: GraphQLResolveInfo,
   ) {
     const take = Math.min(Math.max(pagination?.take ?? 0, MIN_TRANSACTIONS_TAKE), MAX_TRANSACTIONS_TAKE);
     const cursor = pagination?.cursor ?? null;
+    const sortField = orderBy?.field ?? "date";
+    const sortOrder = orderBy?.sortOrder ?? "desc";
 
-    function checkOrderBy(field: string): SortOrder | undefined { //? put in other file and use on other resolvers
-      return orderBy && orderBy.field === field ? orderBy.sortOrder : undefined;
+    function checkOrderBy(field: string): SortOrder | undefined {
+      return sortField === field ? sortOrder : undefined;
     }
 
-    const _orderBy = { //? require the input of the orderBy data?
-      // account: { //? can't have account {} and category {} at the same orderBy
-      //   name: checkOrderBy(TransactionFieldOrderBy.accountName),
-      // },
-      // category: {
-      //   name: checkOrderBy(TransactionFieldOrderBy.categoryName),
-      // },
+    const _orderBy = {
+      account: checkOrderBy(TransactionFieldOrderBy.accountName) ? 
+        { 
+          name: sortOrder,
+        } : undefined,
+      category: checkOrderBy(TransactionFieldOrderBy.categoryName) ? 
+        {
+          name: sortOrder,
+        } : undefined,
       reference: checkOrderBy(TransactionFieldOrderBy.reference),
       amount: checkOrderBy(TransactionFieldOrderBy.amount),
       currency: checkOrderBy(TransactionFieldOrderBy.currency),
       date: checkOrderBy(TransactionFieldOrderBy.date),
     };
-
-    // console.log(fields.fieldsByTypeName?.[Object.keys(fields.fieldsByTypeName)[0]]);
 
     return ctx.prisma.transaction.findMany({
       include: {
@@ -111,22 +102,22 @@ export class TransactionResolver {
       where: {
         AND: [
           {
-            //? BANK
+            account: filter?.bankId ? { bank: { id: filter.bankId } } : undefined,
             accountId: filter?.accountId ? filter.accountId : undefined,
             date: {
               gte: filter?.startingDate ? filter.startingDate : undefined,
-              lte: filter?.startingDate ? filter.startingDate : undefined
+              lte: filter?.endingDate ? filter.endingDate : undefined
             },
           },
           {
-            OR: filter?.textSearch ? [ //? testar
-              { reference: filter?.textSearch ? { contains: filter.textSearch } : undefined },
-              { account: filter?.textSearch ? { name: { contains: filter.textSearch } } : undefined },
-              { account: filter?.textSearch ? { bank: { contains: filter.textSearch } } : undefined },
-              { category: filter?.textSearch ? { name: { contains: filter.textSearch } } : undefined },
+            OR: filter?.textSearch ? [
+              { reference: filter?.textSearch ? { contains: filter.textSearch, mode: "insensitive" } : undefined },
+              { account: filter?.textSearch ? { name: { contains: filter.textSearch, mode: "insensitive" } } : undefined },
+              { account: filter?.textSearch ? { bank: { name: { contains: filter.textSearch, mode: "insensitive" } } } : undefined },
+              { category: filter?.textSearch ? { name: { contains: filter.textSearch, mode: "insensitive" } } : undefined },
               //? DATE
               //? AMOUNT
-              //? CURRENCY
+              { currency: filter?.textSearch && filter?.textSearch.length === 3 ? { equals: filter.textSearch, mode: "insensitive" } : undefined },
             ] : undefined,
           }
         ]
@@ -134,7 +125,7 @@ export class TransactionResolver {
       orderBy: [
         _orderBy,
         {
-          id: SortOrder.asc, //?
+          id: SortOrder.asc,
         }
       ]
     });

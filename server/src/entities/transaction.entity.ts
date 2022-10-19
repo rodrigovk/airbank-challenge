@@ -2,7 +2,7 @@ import "reflect-metadata";
 import { ObjectType, InputType, Field, ID } from "type-graphql";
 import { SortOrder, Account, Category } from "@entities";
 
-export enum TransactionFieldOrderBy { //? nome?
+export enum TransactionFieldOrderBy {
   accountName = "accountName",
   categoryName = "categoryName",
   reference = "reference",
@@ -21,19 +21,19 @@ export class TransactionOrderByInput {
 
 @InputType()
 export class TransactionsFilter {
-  @Field()
+  @Field({ nullable: true })
   textSearch: string;
 
-  //? @Field(() => ID)
-  //? bankId: string; create separate table for banks? or just filter over the name?
+  @Field(() => ID, { nullable: true })
+  bankId: string;
 
-  @Field()
+  @Field(() => ID, { nullable: true })
   accountId: string;
 
-  @Field()
+  @Field({ nullable: true })
   startingDate: Date;
 
-  @Field()
+  @Field({ nullable: true })
   endingDate: Date;
 }
 
